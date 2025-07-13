@@ -1,108 +1,105 @@
 <div align="center">
-  <h1>🤖 Telegram username parser</h1>
+  <h1>🤖 Telegram Username Parser</h1>
 
 ![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
 </div>
 
-## 📋 Обзор
+<div align="center">
+    <b>English</b> |
+    <a href="/README.ru.md">Русский</a>
+</div>
 
-Telegram username parser - инструмент, который извлекает username из каналов Telegram и истории сообщений. Он предоставляет эффективный способ сбора имен пользователей как из участников каналов, так и от авторов сообщений.
+## 📋 Overview
 
-## ✨ Возможности
+Telegram Username Parser is a tool that extracts usernames from Telegram channels and message history. It provides an efficient way to collect usernames from both channel participants and message authors.
 
-- 🔍 Извлечение имен пользователей из участников канала
-- 📃 Парсинг имен пользователей из истории сообщений
-- 💾 Сохранение результатов в файл
-- 🔄 Предотвращение дубликатов в результатах
-- 🔐 Использование Telegram API с управлением сессиями
+## ✨ Features
 
-## 🚀 Установка
+- 🔍 Extract usernames from channel participants
+- 📃 Parse usernames from message history
+- 💾 Save results to a file
+- 🔄 Prevent duplicates in results
+- 🔐 Use Telegram API with session management
 
-1. Клонируйте репозиторий:
+## 🚀 Installation
+
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/goldpulpy/telegram-username-parser.git
    cd telegram-username-parser
    ```
 
-2. Установите зависимости используя Makefile:
+2. Install dependencies using Makefile:
 
    ```bash
    make setup
    ```
 
-   Это создаст виртуальное окружение и установит все необходимые зависимости.
+   This will create a virtual environment and install all necessary dependencies.
 
-3. Настройте учетные данные Telegram API:
-   - Отредактируйте `config.json` и добавьте:
-     - `api_id`: Ваш Telegram API ID
-     - `api_hash`: Ваш Telegram API hash
-     - `phone`: Ваш номер телефона в международном формате
+3. Configure Telegram API credentials:
+   - Edit `config.json` and add:
+     - `api_id`: Your Telegram API ID
+     - `api_hash`: Your Telegram API hash
+     - `phone`: Your phone number in international format
 
-## 🛠️ Конфигурация
+## 🛠️ Configuration
 
-Создайте или отредактируйте файл `config.json`:
+Create or edit the `config.json` file:
 
 ```json
 {
-  "api_id": ВАШ_API_ID,
-  "api_hash": "ВАШ_API_HASH",
-  "phone": "+ВАШ_НОМЕР_ТЕЛЕФОНА"
+  "api_id": YOUR_API_ID,
+  "api_hash": "YOUR_API_HASH",
+  "phone": "+YOUR_PHONE_NUMBER"
 }
 ```
 
-> ⚠️ **Примечание**: Чтобы получить `api_id` и `api_hash`, зарегистрируйте своё приложение на [https://my.telegram.org/apps](https://my.telegram.org/apps)
+> ⚠️ **Note**: To obtain `api_id` and `api_hash`, register your application at [https://my.telegram.org/apps](https://my.telegram.org/apps)
 
-## 🖥️ Использование
+## 🖥️ Usage
 
-Запустите основной скрипт:
+Run the main script:
 
 ```bash
 source venv/bin/activate
 python main.py
 ```
 
-### Аргументы командной строки:
+### Command-line arguments:
 
-- `--config`: Путь к файлу конфигурации (по умолчанию: `config.json`)
-- `--result_directory`: Путь для хранения результатов (по умолчанию: `result`)
-- `--session_directory`: Путь для хранения сессий (по умолчанию: `sessions`)
-- `--debug`: Включить режим отладки (опционально)
+- `--config`: Path to the configuration file (default: `config.json`)
+- `--result_directory`: Path to store results (default: `result`)
+- `--session_directory`: Path to store sessions (default: `sessions`)
+- `--debug`: Enable debug mode (optional)
 
-## 📊 Как это работает
+## 📊 How It Works
 
-1. Инструмент подключается к Telegram, используя ваши учетные данные
-2. Запрашивает целевое username канала или чата
-3. Сначала извлекает username из участников чата/канала
-4. Затем анализирует историю сообщений для извлечения username авторов сообщений
-5. Все уникальные имена пользователей сохраняются в файл (формат `@username`)
+1. The tool connects to Telegram using your credentials
+2. Requests the target username of the channel or chat
+3. First extracts usernames from chat/channel participants
+4. Then analyzes message history to extract usernames of message authors
+5. All unique usernames are saved to a file (in the format `@username`)
 
-> ⚠️ **Примечание**: если сбор идет с канала, бот должен находиться в канале и иметь доступ к участникам.
+> ⚠️ **Note**: If collecting from a channel, the bot must be in the channel and have access to participants.
 
-## 🧩 Архитектура
+## 🧩 Architecture
 
-Проект организован в несколько модулей:
+The project is organized into several modules:
 
-| Модуль           | Описание                               |
-| ---------------- | -------------------------------------- |
-| `app/config.py`  | Функциональность загрузки конфигурации |
-| `app/parser.py`  | Стратегии парсинга имен пользователей  |
-| `app/result.py`  | Хранение и управление результатами     |
-| `app/session.py` | Обработка сессий Telegram              |
-| `main.py`        | Основная точка входа                   |
+| Module           | Description                         |
+| ---------------- | ----------------------------------- |
+| `app/config.py`  | Configuration loading functionality |
+| `app/parser.py`  | Username parsing strategies         |
+| `app/result.py`  | Result storage and management       |
+| `app/session.py` | Telegram session handling           |
+| `main.py`        | Main entry point                    |
 
-## 📝 Лицензия
+## 📝 License
 
-Этот проект доступен по лицензии [MIT](LICENSE).
-
-## 🤝 Вклад в проект
-
-Приветствуются вклады, вопросы и запросы на добавление новых функций!
-
-## 🔒 Отказ от ответственности
-
-Этот инструмент должен использоваться ответственно и в соответствии с Условиями использования Telegram.
+This project is available under the [MIT](LICENSE) license.
 
 <h6 align="center">Created by goldpulpy with ❤️</h6>
