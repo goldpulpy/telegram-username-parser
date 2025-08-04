@@ -1,4 +1,4 @@
-"""Parser for telegram"""
+"""Parser for telegram."""
 
 import logging
 from abc import ABC, abstractmethod
@@ -13,26 +13,27 @@ logger = logging.getLogger(__name__)
 
 
 class ParsedCounter:
-    """Counter for parsed elements"""
+    """Counter for parsed elements."""
 
     def __init__(self) -> None:
+        """Initialize parsed counter."""
         self._parsed = 0
 
     @property
     def parsed(self) -> int:
-        """Count of parsed elements"""
+        """Count of parsed elements."""
         return self._parsed
 
 
 class BaseParser(ABC, ParsedCounter):
-    """Parser for telegram"""
+    """Parser for telegram."""
 
     def __init__(
         self,
         client: TelegramClient,
         target_entity: str,
     ) -> None:
-        """Initialize parser
+        """Initialize parser.
 
         :param client: Telegram client
         :param target_entity: Target entity
@@ -43,19 +44,18 @@ class BaseParser(ABC, ParsedCounter):
 
     @abstractmethod
     async def parse(self) -> AsyncGenerator[str, None]:
-        """Parse method
-        """
+        """Parse method."""
 
 
 class ChannelParser(BaseParser, ParsedCounter):
-    """Parser for telegram channel"""
+    """Parser for telegram channel."""
 
     def __init__(
         self,
         client: TelegramClient,
         target_entity: str,
     ) -> None:
-        """Initialize channel parser
+        """Initialize channel parser.
 
         :param client: Telegram client
         :param target_entity: Target entity
@@ -64,7 +64,7 @@ class ChannelParser(BaseParser, ParsedCounter):
         ParsedCounter.__init__(self)
 
     async def parse(self) -> AsyncGenerator[str, None]:
-        """Get participants
+        """Get participants.
 
         :param limit: Limit of participants
         :return: Async generator of participants
@@ -97,14 +97,14 @@ class ChannelParser(BaseParser, ParsedCounter):
 
 
 class MessageHistoryParser(BaseParser, ParsedCounter):
-    """Parser for telegram message"""
+    """Parser for telegram message."""
 
     def __init__(
         self,
         client: TelegramClient,
         target_entity: str,
     ) -> None:
-        """Initialize message parser
+        """Initialize message parser.
 
         :param client: Telegram client
         :param target_entity: Target entity
@@ -113,7 +113,7 @@ class MessageHistoryParser(BaseParser, ParsedCounter):
         ParsedCounter.__init__(self)
 
     async def parse(self) -> AsyncGenerator[str, None]:
-        """Get messages
+        """Get messages.
 
         :param limit: Limit of messages
         :return: Async generator of messages

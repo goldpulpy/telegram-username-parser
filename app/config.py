@@ -1,4 +1,4 @@
-"""Config for the app"""
+"""Config for the app."""
 
 import json
 import logging
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Config:
-    """Config for the app"""
+    """Config for the app."""
 
     api_id: int
     api_hash: str
@@ -19,12 +19,12 @@ class Config:
 
 
 class ConfigLoader(ABC):
-    """Loader for the config"""
+    """Loader for the config."""
 
     @staticmethod
     @abstractmethod
     def load(path: str) -> Config:
-        """Load the config
+        """Load the config.
 
         :param path: path to the config file
         :return: Config
@@ -32,27 +32,28 @@ class ConfigLoader(ABC):
 
     @staticmethod
     def validate_path(path: str) -> None:
-        """Validate file path
+        """Validate file path.
 
         :param path: path to the config file
         """
         if not Path(path).exists():
-            raise FileNotFoundError(f"Config file not found: {path}")
+            msg = f"Config file not found: {path}"
+            raise FileNotFoundError(msg)
 
 
 class JsonConfigLoader(ConfigLoader):
-    """Config loader"""
+    """Config loader."""
 
     @staticmethod
     def load(path: str) -> Config:
-        """Load the config
+        """Load the config.
 
         :param path: path to the config file
         :return: Config
         """
         JsonConfigLoader.validate_path(path)
 
-        with open(path, encoding="utf-8") as file:
+        with Path(path).open(encoding="utf-8") as file:
             config = json.load(file)
 
         logger.info("Loaded config from %s", path)

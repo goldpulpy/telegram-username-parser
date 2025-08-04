@@ -1,19 +1,19 @@
-"""Result for the username parser"""
+"""Result for the username parser."""
 
 import logging
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 
 class Interface(ABC):
-    """Interface for the result"""
+    """Interface for the result."""
 
     @abstractmethod
-    def add_user(self, username: str, add_tag: bool = True) -> bool:
-        """Add a user to the result
+    def add_user(self, username: str, *, add_tag: bool = True) -> bool:
+        """Add a user to the result.
 
         :param username: username to add
         :param add_tag: whether to add the tag "@username"
@@ -23,67 +23,82 @@ class Interface(ABC):
     @property
     @abstractmethod
     def result_path(self) -> Path:
-        """Get the path to the storage"""
+        """Get the path to the storage."""
 
 
 class StorageInterface(ABC):
-    """Interface for storage operations"""
+    """Interface for storage operations."""
 
     @abstractmethod
     def save(self, content: str) -> None:
-        """Save content to storage"""
+        """Save content to storage."""
 
     @property
     @abstractmethod
     def path(self) -> Path:
-        """Get the path to the storage"""
+        """Get the path to the storage."""
 
 
 class FileStorage(StorageInterface):
-    """File storage implementation"""
+    """File storage implementation."""
 
     def __init__(self, directory: str) -> None:
+        """Initialize file storage.
+
+        :param directory: directory to use
+        """
         self._directory = Path(directory)
         self._directory.mkdir(parents=True, exist_ok=True)
-        self._file = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+        self._file = self._get_file_name()
         self._path = self._directory / self._file
 
+    def _get_file_name(self) -> str:
+        """Get the file name."""
+        now = datetime.now(tz=timezone.utc).astimezone()
+        return f"{now.strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+
     def save(self, content: str) -> None:
-        with open(self._path, "a", encoding="utf-8") as file:
+        """Save content to storage."""
+        with Path(self._path).open("a", encoding="utf-8") as file:
             file.write(f"{content}\n")
         logger.debug("Added %s to %s", content, self._path)
 
     @property
     def path(self) -> Path:
-        """Get the path to the storage"""
+        """Get the path to the storage."""
         return self._path
 
 
 class DublicateCounter:
-    """Counter for dublicate elements"""
+    """Counter for dublicate elements."""
 
     def __init__(self) -> None:
+        """Initialize dublicate counter."""
         self._dublicates = 0
 
     @property
     def dublicates(self) -> int:
-        """Count of dublicate elements"""
+        """Count of dublicate elements."""
         return self._dublicates
 
 
 class UserResult(Interface, DublicateCounter):
-    """Result for the username parser"""
+    """Result for the username parser."""
 
     def __init__(self, storage: StorageInterface) -> None:
+        """Initialize user result.
+
+        :param storage: storage to use
+        """
         self._storage = storage
         self._users = []
         DublicateCounter.__init__(self)
 
-    def add_user(self, username: str, add_tag: bool = True) -> bool:
-        """Add a user to the result
+    def add_user(self, username: str, *, add_tag: bool = True) -> bool:
+        """Add a user to the result.
 
-        :param username: username to add
-        :param add_tag: whether to add the tag "@username"
+        : param username: username to add
+        : param add_tag: whether to add the tag "@username"
         """
         if add_tag:
             username = f"@{username}"
@@ -100,9 +115,9 @@ class UserResult(Interface, DublicateCounter):
 
     @property
     def result_path(self) -> Path:
-        """Get the path to the storage"""
+        """Get the path to the storage."""
         return self._storage.path
 
     def __len__(self) -> int:
-        """Get the number of users"""
+        """Get the number of users."""
         return len(self._users)

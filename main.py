@@ -1,4 +1,4 @@
-"""Username parser for telegram"""
+"""Username parser for telegram."""
 
 import asyncio
 import logging
@@ -14,7 +14,7 @@ logger = logging.getLogger("unparser")
 
 
 async def parse(result: UserResult, strategy: BaseParser) -> None:
-    """Parse the target username
+    """Parse the target entity.
 
     :param result: result storage
     :param strategy: parsing strategy
@@ -31,7 +31,7 @@ async def parse(result: UserResult, strategy: BaseParser) -> None:
 
 
 async def main(args: Namespace) -> None:
-    """Main function
+    """Entry point.
 
     :param args: arguments from the command line
     :param target_username: target username
@@ -83,7 +83,9 @@ if __name__ == "__main__":
         default="sessions",
     )
     parser.add_argument(
-        "--debug", action="store_true", help="Enable debug mode",
+        "--debug",
+        action="store_true",
+        help="Enable debug mode",
     )
 
     args = parser.parse_args()
@@ -100,8 +102,8 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, SystemExit):
         logger.info("Exiting...")
 
-    except Exception as e:
-        logger.error("Error: %s", e)
+    except Exception:
+        logger.exception("Unexpected error")
 
     finally:
         input("Press Enter to exit...")

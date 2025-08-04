@@ -1,4 +1,4 @@
-"""Client session module"""
+"""Client session module."""
 
 import logging
 from abc import ABC, abstractmethod
@@ -10,19 +10,19 @@ logger = logging.getLogger(__name__)
 
 
 class SessionStorageInterface(ABC):
-    """Session storage interface"""
+    """Session storage interface."""
 
     @property
     @abstractmethod
     def session_path(self) -> Path:
-        """Get session path"""
+        """Get session path."""
 
 
 class FileSessionStorage(SessionStorageInterface):
-    """File session storage"""
+    """File session storage."""
 
     def __init__(self, session_dir: str, api_id: int) -> None:
-        """Initialize session storage
+        """Initialize session storage.
 
         :param session_dir: Session directory
         :param api_id: API ID
@@ -33,12 +33,12 @@ class FileSessionStorage(SessionStorageInterface):
 
     @property
     def session_path(self) -> Path:
-        """Get session path"""
+        """Get session path."""
         return self._session_path
 
 
 class SessionMaker:
-    """Telegram client"""
+    """Session maker."""
 
     def __init__(
         self,
@@ -47,7 +47,7 @@ class SessionMaker:
         api_hash: str,
         session_storage: SessionStorageInterface,
     ) -> None:
-        """Initialize client
+        """Initialize session maker.
 
         :param phone_number: Phone number
         :param api_id: API ID
@@ -60,9 +60,9 @@ class SessionMaker:
         self._session_storage = session_storage
 
     async def make_session(self) -> TelegramClient:
-        """Make session
+        """Make session.
 
-        :return: Telegram client
+        :return: Telegram client session
         """
         client = TelegramClient(
             session=self._session_storage.session_path,
@@ -87,7 +87,9 @@ class SessionMaker:
                     )
 
             logger.info("Account %s authenticated", self._phone_number)
-            return client
-        except Exception as e:
-            logger.error("Authentication error: %s", e)
+
+        except Exception:
+            logger.exception("Authentication error")
             raise
+
+        return client
