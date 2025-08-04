@@ -1,7 +1,9 @@
 """Client session module"""
+
 import logging
-from pathlib import Path
 from abc import ABC, abstractmethod
+from pathlib import Path
+
 from telethon import TelegramClient, errors
 
 logger = logging.getLogger(__name__)
@@ -14,15 +16,13 @@ class SessionStorageInterface(ABC):
     @abstractmethod
     def session_path(self) -> Path:
         """Get session path"""
-        pass
 
 
 class FileSessionStorage(SessionStorageInterface):
     """File session storage"""
 
     def __init__(self, session_dir: str, api_id: int) -> None:
-        """
-        Initialize session storage
+        """Initialize session storage
 
         :param session_dir: Session directory
         :param api_id: API ID
@@ -45,10 +45,9 @@ class SessionMaker:
         phone_number: str,
         api_id: int,
         api_hash: str,
-        session_storage: SessionStorageInterface
+        session_storage: SessionStorageInterface,
     ) -> None:
-        """
-        Initialize client
+        """Initialize client
 
         :param phone_number: Phone number
         :param api_id: API ID
@@ -61,15 +60,14 @@ class SessionMaker:
         self._session_storage = session_storage
 
     async def make_session(self) -> TelegramClient:
-        """
-        Make session
+        """Make session
 
         :return: Telegram client
         """
         client = TelegramClient(
             session=self._session_storage.session_path,
             api_id=self._api_id,
-            api_hash=self._api_hash
+            api_hash=self._api_hash,
         )
         try:
             await client.connect()
@@ -80,11 +78,12 @@ class SessionMaker:
                         self._phone_number,
                         input(
                             ">>> Enter the confirmation code for "
-                            f"{self._phone_number}: ")
+                            f"{self._phone_number}: ",
+                        ),
                     )
                 except errors.SessionPasswordNeededError:
                     await client.sign_in(
-                        password=input(">>> Enter 2FA password: ")
+                        password=input(">>> Enter 2FA password: "),
                     )
 
             logger.info("Account %s authenticated", self._phone_number)

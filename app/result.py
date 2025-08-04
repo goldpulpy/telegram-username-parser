@@ -1,9 +1,9 @@
 """Result for the username parser"""
-import logging
-from pathlib import Path
-from datetime import datetime
-from abc import ABC, abstractmethod
 
+import logging
+from abc import ABC, abstractmethod
+from datetime import datetime
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -19,27 +19,24 @@ class Interface(ABC):
         :param add_tag: whether to add the tag "@username"
         :return: whether the user was added
         """
-        pass
 
     @property
     @abstractmethod
     def result_path(self) -> Path:
         """Get the path to the storage"""
-        pass
 
 
 class StorageInterface(ABC):
     """Interface for storage operations"""
+
     @abstractmethod
     def save(self, content: str) -> None:
         """Save content to storage"""
-        pass
 
     @property
     @abstractmethod
     def path(self) -> Path:
         """Get the path to the storage"""
-        pass
 
 
 class FileStorage(StorageInterface):
@@ -83,8 +80,7 @@ class UserResult(Interface, DublicateCounter):
         DublicateCounter.__init__(self)
 
     def add_user(self, username: str, add_tag: bool = True) -> bool:
-        """
-        Add a user to the result
+        """Add a user to the result
 
         :param username: username to add
         :param add_tag: whether to add the tag "@username"

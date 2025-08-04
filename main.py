@@ -1,19 +1,20 @@
 """Username parser for telegram"""
-import logging
-import asyncio
-from argparse import ArgumentParser, Namespace
-from app.config import JsonConfigLoader
-from app.result import UserResult, FileStorage
-from app.session import FileSessionStorage, SessionMaker
-from app.parser import ChannelParser, MessageHistoryParser, BaseParser
 
-logging.getLogger('telethon').setLevel(level=logging.ERROR)
+import asyncio
+import logging
+from argparse import ArgumentParser, Namespace
+
+from app.config import JsonConfigLoader
+from app.parser import BaseParser, ChannelParser, MessageHistoryParser
+from app.result import FileStorage, UserResult
+from app.session import FileSessionStorage, SessionMaker
+
+logging.getLogger("telethon").setLevel(level=logging.ERROR)
 logger = logging.getLogger("unparser")
 
 
 async def parse(result: UserResult, strategy: BaseParser) -> None:
-    """
-    Parse the target username
+    """Parse the target username
 
     :param result: result storage
     :param strategy: parsing strategy
@@ -24,13 +25,13 @@ async def parse(result: UserResult, strategy: BaseParser) -> None:
 
     logger.info(
         "Finished parsing: parsed %s elements, %s users added",
-        strategy.parsed, added
+        strategy.parsed,
+        added,
     )
 
 
 async def main(args: Namespace) -> None:
-    """
-    Main function
+    """Main function
 
     :param args: arguments from the command line
     :param target_username: target username
@@ -43,7 +44,7 @@ async def main(args: Namespace) -> None:
         phone_number=config.phone,
         api_id=config.api_id,
         api_hash=config.api_hash,
-        session_storage=session_storage
+        session_storage=session_storage,
     )
     session = await sessionmaker.make_session()
     target_username = input(">>> Enter the target channel/chat username: ")
@@ -55,25 +56,34 @@ async def main(args: Namespace) -> None:
 
     logger.info(
         "Result file: %s, users: %s, dublicates: %s",
-        result.result_path, len(result), result.dublicates
+        result.result_path,
+        len(result),
+        result.dublicates,
     )
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument(
-        "--config", type=str, help="Path to the config file",
-        default="config.json"
+        "--config",
+        type=str,
+        help="Path to the config file",
+        default="config.json",
     )
     parser.add_argument(
-        "--result_directory", type=str, help="Path to the result directory",
-        default="result"
+        "--result_directory",
+        type=str,
+        help="Path to the result directory",
+        default="result",
     )
     parser.add_argument(
-        "--session_directory", type=str, help="Path to the session directory",
-        default="sessions"
+        "--session_directory",
+        type=str,
+        help="Path to the session directory",
+        default="sessions",
     )
     parser.add_argument(
-        "--debug", action="store_true", help="Enable debug mode"
+        "--debug", action="store_true", help="Enable debug mode",
     )
 
     args = parser.parse_args()

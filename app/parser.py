@@ -1,12 +1,13 @@
 """Parser for telegram"""
+
 import logging
 from abc import ABC, abstractmethod
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
+
 from telethon import TelegramClient
-from telethon.tl.types import ChannelParticipantsSearch
 from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.functions.messages import GetHistoryRequest
-from telethon.tl.types import PeerUser
+from telethon.tl.types import ChannelParticipantsSearch, PeerUser
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +32,7 @@ class BaseParser(ABC, ParsedCounter):
         client: TelegramClient,
         target_entity: str,
     ) -> None:
-        """
-        Initialize parser
+        """Initialize parser
 
         :param client: Telegram client
         :param target_entity: Target entity
@@ -43,10 +43,8 @@ class BaseParser(ABC, ParsedCounter):
 
     @abstractmethod
     async def parse(self) -> AsyncGenerator[str, None]:
+        """Parse method
         """
-        Parse method
-        """
-        pass
 
 
 class ChannelParser(BaseParser, ParsedCounter):
@@ -57,8 +55,7 @@ class ChannelParser(BaseParser, ParsedCounter):
         client: TelegramClient,
         target_entity: str,
     ) -> None:
-        """
-        Initialize channel parser
+        """Initialize channel parser
 
         :param client: Telegram client
         :param target_entity: Target entity
@@ -67,13 +64,11 @@ class ChannelParser(BaseParser, ParsedCounter):
         ParsedCounter.__init__(self)
 
     async def parse(self) -> AsyncGenerator[str, None]:
-        """
-        Get participants
+        """Get participants
 
         :param limit: Limit of participants
         :return: Async generator of participants
         """
-
         while True:
             participants = await self._client(
                 GetParticipantsRequest(
@@ -82,7 +77,7 @@ class ChannelParser(BaseParser, ParsedCounter):
                     limit=200,
                     filter=ChannelParticipantsSearch(""),
                     hash=0,
-                )
+                ),
             )
             if not participants.users:
                 break
@@ -95,7 +90,8 @@ class ChannelParser(BaseParser, ParsedCounter):
 
             logger.info(
                 "Get participants: %s, with username: %s",
-                len(participants.users), with_username
+                len(participants.users),
+                with_username,
             )
             self._parsed += len(participants.users)
 
@@ -108,8 +104,7 @@ class MessageHistoryParser(BaseParser, ParsedCounter):
         client: TelegramClient,
         target_entity: str,
     ) -> None:
-        """
-        Initialize message parser
+        """Initialize message parser
 
         :param client: Telegram client
         :param target_entity: Target entity
@@ -118,8 +113,7 @@ class MessageHistoryParser(BaseParser, ParsedCounter):
         ParsedCounter.__init__(self)
 
     async def parse(self) -> AsyncGenerator[str, None]:
-        """
-        Get messages
+        """Get messages
 
         :param limit: Limit of messages
         :return: Async generator of messages
@@ -135,7 +129,7 @@ class MessageHistoryParser(BaseParser, ParsedCounter):
                     max_id=0,
                     min_id=0,
                     hash=0,
-                )
+                ),
             )
             if not messages.messages:
                 break
@@ -144,7 +138,7 @@ class MessageHistoryParser(BaseParser, ParsedCounter):
             for message in messages.messages:
                 if isinstance(message.from_id, PeerUser):
                     user = await self._client.get_entity(
-                        message.from_id.user_id
+                        message.from_id.user_id,
                     )
                     if user.username:
                         with_username += 1
@@ -152,6 +146,7 @@ class MessageHistoryParser(BaseParser, ParsedCounter):
 
             logger.info(
                 "Get messages: %s, with username: %s",
-                len(messages.messages), with_username
+                len(messages.messages),
+                with_username,
             )
             self._parsed += len(messages.messages)
