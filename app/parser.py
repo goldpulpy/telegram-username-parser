@@ -38,8 +38,10 @@ class BaseParser(ABC):
         self._parsed = 0
 
     @abstractmethod
-    def parse(self) -> AsyncGenerator[str, None]:
+    async def parse(self) -> AsyncGenerator[str, None]:
         """Parse method."""
+        yield ""
+        raise NotImplementedError
 
     @property
     def parsed(self) -> int:
