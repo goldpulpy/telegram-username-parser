@@ -55,10 +55,10 @@ async def main(args: Namespace) -> None:
     await parse(result, MessageHistoryParser(session, target_username))
 
     logger.info(
-        "Result file: %s, users: %s, dublicates: %s",
+        "Result file: %s, users: %s, duplicates: %s",
         result.result_path,
         len(result),
-        result.dublicates,
+        result.duplicates,
     )
 
 

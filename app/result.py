@@ -69,20 +69,7 @@ class FileStorage(StorageInterface):
         return self._path
 
 
-class DublicateCounter:
-    """Counter for dublicate elements."""
-
-    def __init__(self) -> None:
-        """Initialize dublicate counter."""
-        self._dublicates = 0
-
-    @property
-    def dublicates(self) -> int:
-        """Count of dublicate elements."""
-        return self._dublicates
-
-
-class UserResult(Interface, DublicateCounter):
+class UserResult(Interface):
     """Result for the username parser."""
 
     def __init__(self, storage: StorageInterface) -> None:
@@ -92,7 +79,7 @@ class UserResult(Interface, DublicateCounter):
         """
         self._storage = storage
         self._users = []
-        DublicateCounter.__init__(self)
+        self._duplicates = 0
 
     def add_user(self, username: str, *, add_tag: bool = True) -> bool:
         """Add a user to the result.
@@ -109,9 +96,14 @@ class UserResult(Interface, DublicateCounter):
             self._storage.save(username)
             return True
 
-        self._dublicates += 1
-        logger.debug("Dublicate: %s", username)
+        self._duplicates += 1
+        logger.debug("Duplicate: %s", username)
         return False
+
+    @property
+    def duplicates(self) -> int:
+        """Get the number of duplicates."""
+        return self._duplicates
 
     @property
     def result_path(self) -> Path:
